@@ -1,0 +1,54 @@
+services:
+
+  db:
+    image: postgres:17
+    container_name: postgres-e1-albergues
+    restart: always
+    #rede propia coa q se comunican os servizos entre eles
+    networks:
+      - rede_albergues
+    volumes:
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 134217728 # 128*2^20 bytes = 128Mb
+      #volume para os scripts de inicialización da base de datos, que se executan automaticamente ao crear o contedor
+      - ./sql:/docker-entrypoint-initdb.d:ro
+      #volume para os datos da base de datos, que persisten entre reinicios do contedor
+      - postgres_datos:/var/lib/postgresql/data
+    environment:
+      #variables de entorno para configurar a base de datos, o usuario e a contrasinal (.env)
+      POSTGRES_USER: ${USUARIO}
+      POSTGRES_PASSWORD: ${CONTRASINAL}
+      POSTGRES_DB: ${BASE_DATOS}
+    healthcheck:
+      #comprobación de que a base de datos está lista para aceptar conexións
+      test: ["CMD-SHELL", "pg_isready -U $${USUARIO} -d $${BASE_DATOS} -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  adminer:
+    image: adminer:4
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - rede_albergues
+    environment:
+      #variable de entorno para indicar o servidor de bd ao que se vai conectar Adminer
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      db:
+        #esperar a que o contedor de bd estea listo antes de iniciar Adminer
+        condition: service_healthy
+
+#hai q crear a rede antes de levantar os contedores, se non, docker compose up falla
+networks:
+  rede_albergues:
+    driver: bridge
+
+#hai q crear o volume antes de levantar os contedores, se non, docker compose up falla
+volumes:
+  postgres_datos:
