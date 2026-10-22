@@ -65,23 +65,15 @@ docker compose up -d
 
 Unha das características máis importantes deste deseño é que **os datos non se perden** cando o contedor se apaga ou se destrúe, grazas ao volume nomeado de Docker `postgres_datos`.
 
-Para xustificar e documentar a túa proba de persistencia na memoria do proxecto, recomendámosche facer os seguintes pasos e plasmar os resultados nunha táboa coma esta:
-
-### Como facer o test:
-1. **Punto de partida:** Conecta a Adminer, vai á táboa `albergues` e comproba que están os 8 rexistros orixinais.
-2. **Acción 1 (Inserción):** Introduce un 9º albergue inventado directamente desde Adminer ou cun `INSERT`.
-3. **Acción 2 (Parada):** Apaga os contedores correndo `docker compose down` (isto elimina os contedores en execución).
-4. **Acción 3 (Arranque):** Volve a levantar todo con `docker compose up -d`.
-5. **Verificación:** Entra de novo en Adminer e comproba que o 9º albergue segue existindo intacto.
-
 ### Táboa de Resultados do Test
 
-| Nº Paso | Acción Realizada | Estado dos Contedores | Comprobación en Adminer | ¿Os Datos Persisten? |
-| :---: | :--- | :---: | :--- | :---: |
-| **1** | Inicialización por primeira vez | `Up (Running)` | Execútanse os scripts `.sql`. Hai 8 albergues inseridos. | **Si** (Iniciais) |
-| **2** | Inserción manual en Adminer | `Up (Running)` | Engádese o Albergue Nº9 co id correspondente. Total: 9. | **Si** |
-| **3** | Detención da contorna con `down` | `Down (Stop)` | Non hai acceso (Servidor web apagado). | **Si** (No volume) |
-| **4** | Reinicio con `docker compose up` | `Up (Running)` | O script de inicialización é omitido porque xa hai datos. | **Si** |
-| **5** | **Verificación Final** | `Up (Running)` | Accédese e a táboa **segue conservando os 9 albergues**. | **¡ÉXITO! 🎉** |
+| Nº Paso | Acción Realizada | Resultado obtido |
+| :---: | :--- | :--- |
+| **1** | `docker compose up -d` |  |
+| **2** | Inserción manual en Adminer |  |
+| **3** | `docker compose down` e `docker compose up -d` |  | 
+| **4** |  `docker compose down -v` e `docker compose up -d` |  | 
+
+### Por que no paso 4 o resultado é distinto?
 
 
