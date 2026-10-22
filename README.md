@@ -69,7 +69,7 @@ Unha das características máis importantes deste deseño é que **os datos non 
 
 | Nº Paso | Acción Realizada | Resultado obtido |
 | :---: | :--- | :--- |
-| **1** | `docker compose up -d` |  |
+| **1** | `docker compose up -d` | Creanse os contenedores e o volume en Docker desktop |
 | **2** | Inserción manual en Adminer |  |
 | **3** | `docker compose down` e `docker compose up -d` |  | 
 | **4** |  `docker compose down -v` e `docker compose up -d` |  | 

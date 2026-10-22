@@ -13,7 +13,7 @@ services:
         tmpfs:
           size: 134217728 # 128*2^20 bytes = 128Mb
       #volume para os scripts de inicialización da base de datos, que se executan automaticamente ao crear o contedor
-      - ./sql:/docker-entrypoint-initdb.d:ro
+      - ./initdb:/docker-entrypoint-initdb.d:ro
       #volume para os datos da base de datos, que persisten entre reinicios do contedor
       - postgres_datos:/var/lib/postgresql/data
     environment:
@@ -23,10 +23,11 @@ services:
       POSTGRES_DB: ${BASE_DATOS}
     healthcheck:
       #comprobación de que a base de datos está lista para aceptar conexións
-      test: ["CMD-SHELL", "pg_isready -U $${USUARIO} -d $${BASE_DATOS} -h localhost"]
+      test: ["CMD-SHELL", "pg_isready -h localhost -d $${BASE_DATOS} -U $${USUARIO}"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
 
   adminer:
