@@ -65,15 +65,17 @@ docker compose up -d
 
 Unha das características máis importantes deste deseño é que **os datos non se perden** cando o contedor se apaga ou se destrúe, grazas ao volume nomeado de Docker `postgres_datos`.
 
+
 ### Táboa de Resultados do Test
 
 | Nº Paso | Acción Realizada | Resultado obtido |
 | :---: | :--- | :--- |
 | **1** | `docker compose up -d` | Creanse os contenedores e o volume en Docker desktop |
-| **2** | Inserción manual en Adminer |  |
-| **3** | `docker compose down` e `docker compose up -d` |  | 
-| **4** |  `docker compose down -v` e `docker compose up -d` |  | 
+| **2** | Inserción manual en Adminer | Engádese á táboa xa existente unha nova entrada |
+| **3** | `docker compose down` e `docker compose up -d` | Péchanse os servizos e bórranse os contenedores e volven a crearse | 
+| **4** | `docker compose down -v` e `docker compose up -d` | Aquí sucede o mesmo que no paso 3 pero tamén se elimina o volume | 
+
 
 ### Por que no paso 4 o resultado é distinto?
 
-
+No paso 4 o `docker compose down -v` o que fai é eliminar o volume por completo entón bórranse todos os datos que temos e o que engadimos que non está nos arquivos de configuración. Entón ao volver a levatar os contenedores volve a crearse o volume de cero.
